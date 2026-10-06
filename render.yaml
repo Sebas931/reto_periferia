@@ -1,0 +1,20 @@
+# Despliegue en Render (Blueprint). La clave del modelo se configura en el panel, nunca aquí.
+services:
+  - type: web
+    name: agente-oc-periferia
+    runtime: node
+    plan: free
+    buildCommand: npm ci
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ACCESS_KEY
+        sync: false
+      - key: LLM_MODEL
+        value: claude-opus-5-5
+      - key: LLM_EFFORT
+        value: medium
