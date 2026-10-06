@@ -239,7 +239,6 @@ La decisión de **tolerarlas con marca o rechazarlas** es de la dirección (PRD 
 - **Pasar el estado por el modelo** (`paquete`, `derivados`, `payload` como argumentos de confianza, como sugiere la firma del contrato): se cambió a relectura de la fuente y comparación, con rechazo `PAYLOAD_ALTERADO`. Es la mitigación directa del riesgo "el modelo arregla un monto".
 - **Confirmación solo por prompt:** se movió al backend (`confirmacion.ts` + `casosConfirmados` en `oc_crear`), porque CA3 es un control y no puede depender de que el modelo obedezca.
 - **Comparación con `JSON.stringify`:** generaba falsas alarmas cuando el modelo reordenaba claves; se cambió por comparación de hojas (`mismoContenido`).
-- **Bun:** no estaba instalado en el equipo; se usó Node 22 + `tsx`, que el PRD también acepta.
 - **Errores detectados en las pruebas y corregidos:**
   - Una expresión regular que quitaba el último carácter del nombre del proveedor en lugar del punto final ("S.A.S..").
   - El script del front cargado sin `type="module"` (usaba `await` a nivel superior).
