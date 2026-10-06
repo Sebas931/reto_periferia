@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agente OC · Periferia</title>
+    <link rel="stylesheet" href="/estilos.css" />
+    <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/dompurify@3.1.6/dist/purify.min.js" defer></script>
+    <script type="module" src="/app.js"></script>
+  </head>
+  <body>
+    <header class="barra">
+      <div class="marca">
+        <span class="logo" aria-hidden="true">OC</span>
+        <div>
+          <h1>Agente de órdenes de compra</h1>
+          <p class="sub">SAP simulado · Periferia IT Group · Reto 03</p>
+        </div>
+      </div>
+      <div class="acciones">
+        <span id="modelo" class="chip" title="Proveedor y modelo del backend">…</span>
+        <button id="btn-nueva" class="secundario" type="button">Nueva sesión</button>
+        <button id="btn-reset" class="secundario" type="button" title="Borra las OC y archivos generados para repetir la demo">Reiniciar demo</button>
+      </div>
+    </header>
+
+    <main class="layout">
+      <aside class="panel">
+        <h2>Pruebas sugeridas</h2>
+        <ul id="sugerencias" class="sugerencias">
+          <li><button type="button" data-msg="Procesa la solicitud sol-001 y crea la OC si todo está en orden.">sol-001 · flujo normal</button></li>
+          <li><button type="button" data-msg="Procesa la solicitud sol-002.">sol-002 · proveedor inexistente</button></li>
+          <li><button type="button" data-msg="Procesa la solicitud sol-003.">sol-003 · aprobador sin autoridad</button></li>
+          <li><button type="button" data-msg='Procesa la solicitud "sol-004". Muéstrame la OC como quedaría en SAP, qué validaciones pasó y cuáles no, y no la crees hasta que yo lo confirme.'>sol-004 · cotización ≠ solicitud</button></li>
+          <li><button type="button" data-msg="Procesa la solicitud sol-005.">sol-005 · OC retroactiva</button></li>
+          <li><button type="button" data-msg="Procesa la solicitud sol-006.">sol-006 · IVA no informado</button></li>
+          <li><button type="button" data-msg="Procesa todas las solicitudes pendientes y dame una tabla resumen. No crees las que requieran confirmación.">Todas · resumen</button></li>
+        </ul>
+        <h2>Archivos de control</h2>
+        <ul class="enlaces">
+          <li><a href="/out/control.csv" target="_blank" rel="noopener" data-protegido>out/control.csv</a></li>
+          <li><a href="/out/sap/ordenes.jsonl" target="_blank" rel="noopener" data-protegido>out/sap/ordenes.jsonl</a></li>
+        </ul>
+        <p class="nota">Cada llamada a herramienta se muestra en el chat. Las acciones que requieren tu confirmación se resaltan en ámbar.</p>
+      </aside>
+
+      <section class="chat" aria-live="polite">
+        <div id="mensajes" class="mensajes">
+          <div class="bienvenida">
+            <h2>¿Qué solicitud procesamos?</h2>
+            <p>Pide, por ejemplo, <em>"procesa la solicitud sol-004"</em>. El agente lee el paquete, valida los controles RC1–RC10, arma la OC y solo la crea cuando corresponde.</p>
+          </div>
+        </div>
+
+        <form id="form" class="entrada">
+          <textarea id="texto" rows="2" placeholder="Escribe un mensaje… (Enter envía, Shift+Enter salto de línea)" required maxlength="4000"></textarea>
+          <button id="btn-enviar" type="submit">Enviar</button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
