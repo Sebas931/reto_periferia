@@ -2,7 +2,7 @@
 
 Agente que lee el paquete de una solicitud de compra (correo, solicitud, cotización, aprobación y factura), aplica los controles RC1–RC10 contra los maestros, construye la OC con trazabilidad, genera la evidencia de aprobación (TXT y PDF con sha256) y la crea en un SAP simulado. Las excepciones se devuelven al humano: los bloqueos no se crean y las confirmaciones se crean solo cuando la analista confirma explícitamente.
 
-- **Link de prueba:** `<URL pública del despliegue>`. Clave de acceso: `<ACCESS_KEY, si se configuró>`
+- **Link de prueba:** https://agente-oc-periferia-hujy.onrender.com (sin clave de acceso; en el plan gratuito el primer acceso puede tardar ~1 minuto en despertar)
 - **Diseño y decisiones:** [SOLUCION.md](SOLUCION.md)
 
 ## Requisitos

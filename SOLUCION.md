@@ -87,6 +87,7 @@ Las pruebas `tests/ciclo.test.ts` ejercitan CA1, CA3 y CA5 con un modelo guionad
 
 - **Sin caché:** 19 k × 4 / 1 M + 2,5 k × 20 / 1 M ≈ **USD 0,13 por caso**. Con un turno de confirmación, ≈ USD 0,17.
 - **Con caché:** las relecturas del prefijo bajan a USD 0,20 / MTok, lo que da ≈ USD 0,08–0,10 por caso.
+- **Medido en el despliegue** (sol-004: procesar + confirmar, 2 turnos, 4 herramientas): 14 tokens de entrada sin caché, 33,8 k leídos de caché, 11,4 k escritos en caché y 2,0 k de salida. A precios de Opus 5.5 (lectura de caché USD 0,20, escritura USD 5, salida USD 20 por MTok), son **≈ USD 0,10 por caso**, en línea con la estimación.
 - **Al mes:** 100 OC ≈ USD 10–17. `GET /api/sessions/:id` devuelve los tokens reales de cada sesión para validar esta estimación en la defensa.
 - **Alternativas:** Sonnet 5.5 (USD 2 / 10) reduce el costo a la mitad. Se descartó como default porque la confirmación y la regla de "no afirmar valores propios" son el núcleo del control, y ahí conviene el modelo más fuerte. Con el volumen esperado, la diferencia es de pocos dólares al mes. Cambiarlo es una variable de entorno.
 
@@ -212,7 +213,7 @@ La decisión de **tolerarlas con marca o rechazarlas** es de la dirección (PRD 
 | Front, API, CA1–CA5 | **Hecho** | SSE, tarjetas por herramienta, confirmación resaltada, historial por sesión. |
 | `demo.ts` | **Hecho** | 6 casos, idempotencia, confirmación de sol-004, payload alterado y 20 verificaciones. |
 | Bonus `modulo/` | **Hecho** | Se genera desde la misma fuente; `npm run modulo:check` verifica que no diverja. |
-| Link público | Pendiente de despliegue | `render.yaml` y `Dockerfile` listos. |
+| Link público | **Hecho** | https://agente-oc-periferia-hujy.onrender.com (Render). Probado con sol-004 (confirmación → OC 4500000001) y sol-003 (bloqueo RC2). |
 
 ## 11. Uso de IA
 
