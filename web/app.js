@@ -161,7 +161,7 @@ async function enviar(mensaje) {
     const resp = await fetch("/api/chat/stream", {
       method: "POST",
       headers: cabeceras(),
-      body: JSON.stringify({ sessionId, message: mensaje }),
+      body: JSON.stringify({ ...(sessionId ? { sessionId } : {}), message: mensaje }),
     })
     if (resp.status === 401) {
       pedirClave(true)

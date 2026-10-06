@@ -101,7 +101,7 @@ app.use("/api/reset", exigirClave)
 app.use("/out/*", exigirClave)
 
 const CuerpoChat = z.object({
-  sessionId: z.string().optional(),
+  sessionId: z.string().nullish(),
   message: z.string().trim().min(1, "el mensaje está vacío").max(4000, "el mensaje es demasiado largo"),
 })
 
@@ -116,7 +116,7 @@ async function prepararTurno(c: Context): Promise<Preparacion> {
   }
   const cuerpo = CuerpoChat.safeParse(await c.req.json().catch(() => null))
   if (!cuerpo.success) return { ok: false, estado: 400, error: cuerpo.error.issues.map((i) => i.message).join("; ") }
-  const sesion = await sesiones.obtenerOCrear(cuerpo.data.sessionId)
+  const sesion = await sesiones.obtenerOCrear(cuerpo.data.sessionId ?? undefined)
   if (sesion.ocupada) return { ok: false, estado: 409, error: "La sesión ya está procesando un mensaje. Espera a que termine." }
   return { ok: true, sesion, mensaje: cuerpo.data.message }
 }
