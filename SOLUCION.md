@@ -217,15 +217,36 @@ La decisión de **tolerarlas con marca o rechazarlas** es de la dirección (PRD 
 
 ## 11. Uso de IA
 
-- **Claude Code (Claude Opus 5.5):** comparar los tres retos y elegir este; proponer la arquitectura; generar el código de herramientas, controles, ciclo, front, pruebas y documentación bajo mi revisión; y verificar con `demo.ts`, `tsc` y capturas del front.
-- **Qué se descartó o se cambió de lo propuesto:**
-  - Usar el *tool runner* del SDK: no permitía las guardas del ciclo ni la abstracción de proveedor que pide el PRD.
-  - Confiar en el `paquete`/`payload` que devuelve el modelo: se cambió por relectura y comparación (decisión 1).
-  - Dejar la confirmación solo en el prompt: se movió al backend (decisión 2).
-  - Comparar el paquete recibido con `JSON.stringify`: daba falsas alarmas por orden de claves; se cambió por comparación de hojas.
-  - Usar Bun: no estaba instalado; se usó Node 22 + `tsx`.
+**Asistente usado:** Claude Code (modelo Claude Opus 5.5), en la terminal, sobre la carpeta del reto. Fue el único asistente de IA que usé para construir.
 
-> Completa esta sección con tu propia experiencia (qué revisaste línea por línea, qué preguntaste, qué corregiste). En la defensa se espera que puedas explicar cada archivo.
+**Para qué lo usé:**
+
+| Etapa | Qué hizo la IA | Qué hice yo |
+|---|---|---|
+| Elección del reto | Leyó los 3 instructivos y los 3 PRD y los comparó por riesgo técnico, determinismo y valor en la defensa. | Decidí presentar el reto 3. |
+| Diseño | Propuso la arquitectura (herramientas deterministas, ciclo manual, adaptador LLM propio, confirmación decidida por el backend). | Validé que cumpliera la estructura y las reglas del PRD (secciones 6 y 7). |
+| Código | Generó el dominio (controles RC1–RC10, payload, evidencia), las herramientas zod, el ciclo del agente, la API, el front, las pruebas y el módulo. | Revisé el resultado y lo probé en local y en el link público. |
+| Verificación | Corrió `demo.ts` (20/20), `npm test` (5/5) y `tsc`, tomó capturas del front y probó el link con el modelo real (sol-004 con confirmación y sol-003 bloqueada). | Probé todos los casos desde el navegador en el link público. |
+| Documentación | Redactó `README.md` y `SOLUCION.md`. | Revisé el contenido y definí los ajustes. |
+| Git y despliegue | Creó el historial de commits. | Creé el repositorio en GitHub, hice el push y desplegué en Render con mi clave. |
+
+**Decisiones que tomé durante el proceso:**
+- **Proveedor del modelo:** consideré cambiar a Grok (xAI) porque tenía créditos gratuitos. Lo descarté y me quedé con Anthropic, ya que conseguí la clave. El adaptador (`src/llm/adapter.ts`) permite ese cambio sin tocar el ciclo del agente; no se implementó porque no hizo falta.
+- **Commits:** pedí mensajes cortos y sin marcas de coautoría de la IA.
+
+**Qué descarté o corregí de lo que propuso o produjo la IA:**
+- **Tool runner del SDK de Anthropic:** se descartó a favor de un ciclo manual, porque el PRD exige poder cambiar de proveedor sin tocar el ciclo, y las guardas (confirmación, tope de iteraciones con `tool_choice: none`) necesitan control de cada iteración.
+- **Pasar el estado por el modelo** (`paquete`, `derivados`, `payload` como argumentos de confianza, como sugiere la firma del contrato): se cambió a relectura de la fuente y comparación, con rechazo `PAYLOAD_ALTERADO`. Es la mitigación directa del riesgo "el modelo arregla un monto".
+- **Confirmación solo por prompt:** se movió al backend (`confirmacion.ts` + `casosConfirmados` en `oc_crear`), porque CA3 es un control y no puede depender de que el modelo obedezca.
+- **Comparación con `JSON.stringify`:** generaba falsas alarmas cuando el modelo reordenaba claves; se cambió por comparación de hojas (`mismoContenido`).
+- **Bun:** no estaba instalado en el equipo; se usó Node 22 + `tsx`, que el PRD también acepta.
+- **Errores detectados en las pruebas y corregidos:**
+  - Una expresión regular que quitaba el último carácter del nombre del proveedor en lugar del punto final ("S.A.S..").
+  - El script del front cargado sin `type="module"` (usaba `await` a nivel superior).
+  - Bajo contraste del botón principal en modo oscuro.
+  - **El bug que encontré probando el link:** al elegir una prueba sugerida en una sesión nueva, el front enviaba `sessionId: null` y la API lo rechazaba con "Entrada inválida: se esperaba texto, recibido nulo". Las pruebas automáticas no lo detectaron porque siempre enviaban un `sessionId`. Se corrigió en la API (acepta nulo) y en el front (no lo envía).
+
+**Lección:** la IA aceleró mucho la construcción, pero las pruebas sobre el link real encontraron un error que las pruebas automáticas no cubrían. Las decisiones de control (qué bloquea, qué se confirma y quién confirma) se dejaron en código determinista y no en el modelo, que es también la forma en que la solución usa la IA en producción.
 
 ## 12. Riesgos de llevar esto a producción
 
